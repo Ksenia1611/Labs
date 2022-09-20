@@ -8,57 +8,57 @@ class  StateType(Enum):
 
 class Lexer:
     
-    def __init__(self, letter):
-        self.current_state =  StateType.s0
+    def __init__(self):
+        self.StateType =  StateType
         self.w = []
-        self.letter = letter
+        self.current_state = self.StateType.s0
 
-    def main(self):
-        for letter in word:
-            if self.current_state ==  StateType.s0:
-                if (letter == ' ') or (letter == '\n'):
-                    continue
-                if (letter >= 'a' and letter <= 'z') or (letter >='A' and letter <='Z'):
-                    self.w.append(letter)
-                    self.current_state =  StateType.NXTLIT
-                    continue
-                if (letter >= '0' and letter <= '9'):
-                    self.current_state =  StateType.error
-                    continue
-                else:
-                    self.current_state =  StateType.error
-                    continue
-            if self.current_state ==  StateType.NXTLIT:
-                if (letter >= 'a' and letter <= 'z') or (letter >= 'A' and letter <= 'Z'):                
-                    self.w.append(letter)
-                    continue
-                if letter == ' ' or letter =='\n':
-                    self.current_state =  StateType.s0
-                    print("".join(self.w))
-                    self.w = []
-                    continue 
-                if (letter >= '0' and letter <= '9'):
-                    self.current_state =  StateType.error
-                    continue  
-                else:
-                    self.current_state =  StateType.error
-                    continue
+    def main(self, letter):
+        match self.current_state:
+            case self.StateType.s0:
+                self.First_litera(letter)
 
-word = []
-with open("D:\\laba_1\\text.txt") as file:
+            case self.StateType.NXTLIT:
+                self.Next_litera(letter)
+
+            case self.StateType.error:
+                self.error()
+
+    def First_litera(self, letter):
+        if (letter >= 'a' and letter <= 'z') or (letter >='A' and letter <='Z') or (letter >= 'а' and letter <= 'я') or (letter >= 'А' and letter <= 'Я'):
+            self.current_state = self.StateType.NXTLIT
+            self.w.append(letter)
+            return
+        else:
+            self.current_state = self.StateType.error
+
+    def Next_litera(self, letter):
+        if letter == ' ' or letter =='\n':
+            self.current_state = self.StateType.s0
+            print("".join(self.w))
+            self.w = []
+            return
+        if (letter >= 'a' and letter <= 'z') or (letter >='A' and letter <='Z') or (letter >= 'а' and letter <= 'я') or (letter >= 'А' and letter <= 'Я'):
+            self.w.append(letter)
+            return
+        else:
+            self.current_state = self.StateType.error    
+
+    def error (self):
+        print('ERROR')
+        exit() 
+
+letter = []
+lexer = Lexer() 
+with open("D:\\Lab\\laba_1\\text.txt", encoding = "utf-8") as file:
     for letter in file.read():
-        word.append(letter)
-lexer = Lexer(letter) 
-lexer.main()
+        lexer.main(letter)
 
 if  len(lexer.w) != 0:
      print("".join(lexer.w))
      lexer.current_state = StateType.stop
 
-if lexer.current_state ==  StateType.error:
-    print('ERROR')
-    exit()
-    
 if lexer.current_state ==  StateType.stop:
     print('Stop')
     exit()
+
