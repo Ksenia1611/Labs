@@ -1,5 +1,3 @@
-from ast import Delete
-
 
 class Node:
     def __init__(self , date = None):
@@ -12,28 +10,15 @@ class DoubleLinkedList:
         self.first = None
         self.last = None
 
-     # Получение узла по индексу
-    def get_data(self, data_index):
-        try:
-            last = self.head_value
-            node_index = 0
-            while node_index <= data_index:
-                if node_index == data_index:
-                    return last.data_value
-                node_index += 1
-                last = last.next_value
-        except Exception:
-            print('Индекса не существет')
-
-
     # Добавление элемента в начало списка
     def insert_at_start(self, new_data):
         new_node = Node(new_data)
         if self.first is not None:
+            self.first.prev = new_node
             new_node.next = self.first
             self.first = new_node
         else:
-            self.first = new_node    
+            self.first = self.last = new_node    
     
     # Добавление элемента в конец списка
     def insert_at_end(self, new_data):
@@ -43,13 +28,13 @@ class DoubleLinkedList:
             new_data.prev = self.last
             self.last = new_data
         else:
-            self.first = self.last = new_data
+             self.first = self.last = new_data
 
      # Удаление первого элемента
     def remove_first_element(self):
         if self.first is not None:
-            delIt = self.first
             self.first = self.first.next
+            self.first.prev = None
         else:
             print("Cписок пуст")
 
@@ -63,7 +48,19 @@ class DoubleLinkedList:
                 self.first = None
                 self.last = None
             else:
-                print("Error: List is empty")
+                print("Список пуст")
+    
+    # Нахождение узла
+    def node(self, node):
+        current = self.first
+        while current is not None:
+            if current.data == node:
+                print('True')
+                return True
+            else:
+                current = current.next
+        print('False')
+        return False
                 
     # Печать списка
     def print_list(self):
@@ -76,13 +73,16 @@ class DoubleLinkedList:
             print(value_to_print.data)
             value_to_print = value_to_print.next
 
-class LLInterface:
+class Interface:
+
     def __init__(self):
         self.linked_list = DoubleLinkedList()
 
     def print_linked_list(self):
         self.linked_list.print_list()
-    
+
+    def node(self, node):
+        self.linked_list.node(node)
     
     def add_end(self, value):
         self.linked_list.insert_at_end(value)
@@ -97,11 +97,12 @@ class LLInterface:
         self.linked_list.remove_last_element()
 
 
-ll = LLInterface()
-ll.add_end(5)
-ll.add_end(3)
-ll.add_end(6)
-ll.add_first(55)
-ll.add_first(9)
-ll.pop_last()
-ll.print_linked_list()
+dll = Interface()
+dll.add_end(5)
+dll.add_end(3)
+dll.add_end(6)
+dll.add_first(55)
+dll.add_first(9)
+dll.node(4)
+dll.pop_first()
+dll.print_linked_list()
